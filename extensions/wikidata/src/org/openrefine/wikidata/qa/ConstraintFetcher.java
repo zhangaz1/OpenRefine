@@ -23,11 +23,12 @@
  ******************************************************************************/
 package org.openrefine.wikidata.qa;
 
-import java.util.Set;
-
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * An object that fetches constraints about properties.
@@ -134,4 +135,23 @@ public interface ConstraintFetcher {
      * Can this property be used on items?
      */
     boolean usableOnItems(PropertyIdValue pid);
+
+    /**
+     * Returns the list of PropertyIdValues of conflicting statements
+     *
+     * @param pid:
+     *            the property having conflicts-with constraint
+     * @return
+     */
+    List<PropertyIdValue> getConflictsWithProperties(PropertyIdValue pid);
+
+    /**
+     * Returns the list of all the conflicting values
+     *
+     * @param pid:
+     *            the property having conflicts-with constraint
+     * @return
+     */
+    List<Value> getItemwithConflicts(PropertyIdValue pid);
+
 }

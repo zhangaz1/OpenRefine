@@ -23,15 +23,16 @@
  ******************************************************************************/
 package org.openrefine.wikidata.qa;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.Value;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MockConstraintFetcher implements ConstraintFetcher {
 
@@ -58,6 +59,12 @@ public class MockConstraintFetcher implements ConstraintFetcher {
     public static PropertyIdValue integerPid = Datamodel.makeWikidataPropertyIdValue("P389");
     
     public static PropertyIdValue propertyOnlyPid = Datamodel.makeWikidataPropertyIdValue("P372");
+
+    public static PropertyIdValue conflictsWithPid = Datamodel.makeWikidataPropertyIdValue("P50");
+    public static PropertyIdValue pidConflictingStatement = Datamodel.makeWikidataPropertyIdValue("P31");
+    public static Value conflictingStatementValue = Datamodel.makeWikidataItemIdValue("Q5");
+    public static Value conflictsWithValue = Datamodel.makeWikidataItemIdValue("Q36322");
+
 
     @Override
     public String getFormatRegex(PropertyIdValue pid) {
@@ -161,4 +168,21 @@ public class MockConstraintFetcher implements ConstraintFetcher {
     public boolean usableOnItems(PropertyIdValue pid) {
         return !propertyOnlyPid.equals(pid);
     }
+
+    @Override
+    public List<PropertyIdValue> getConflictsWithProperties(PropertyIdValue pid) {
+        if (conflictsWithPid.equals(pid)) {
+            return Arrays.asList(pidConflictingStatement, null);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Value> getItemwithConflicts(PropertyIdValue pid) {
+        if (conflictsWithPid.equals(pid)) {
+            return Arrays.asList(conflictingStatementValue, null);
+        }
+        return null;
+    }
+
 }

@@ -23,25 +23,15 @@
  ******************************************************************************/
 package org.openrefine.wikidata.qa;
 
+import org.openrefine.wikidata.utils.EntityCache;
+import org.wikidata.wdtk.datamodel.helpers.Datamodel;
+import org.wikidata.wdtk.datamodel.interfaces.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.openrefine.wikidata.utils.EntityCache;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
-import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
-import org.wikidata.wdtk.datamodel.interfaces.Snak;
-import org.wikidata.wdtk.datamodel.interfaces.SnakGroup;
-import org.wikidata.wdtk.datamodel.interfaces.Statement;
-import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
-import org.wikidata.wdtk.datamodel.interfaces.StringValue;
-import org.wikidata.wdtk.datamodel.interfaces.Value;
 
 /**
  * This class provides an abstraction over the way constraint definitions are
@@ -96,7 +86,10 @@ public class WikidataConstraintFetcher implements ConstraintFetcher {
     public static String ALLOWED_ENTITY_TYPES_QID = "Q52004125";
     public static String ALLOWED_ITEM_TYPE_QID = "Q29934200";
     public static String ALLOWED_ENTITY_TYPES_PID = "P2305";
-    
+
+    public static String CONFLICTS_WITH_CONSTRAINT_QID = "Q21502838";
+    public static String CONFLICTS_WITH_PROPERTY_PID = "P2306";
+    public static String ITEM_OF_PROPERTY_CONSTRAINT_PID = "P2305";
 
     // The following constraints still need to be implemented:
 
@@ -339,5 +332,50 @@ public class WikidataConstraintFetcher implements ConstraintFetcher {
             }
         }
         return results;
+    }
+
+    /**
+     * Returns the list of PropertyIdValues of conflicting statements
+     *
+     * @param pid:
+     *            the property having conflicts-with constraint
+     * @return
+     */
+    public List<PropertyIdValue> getConflictsWithProperties(PropertyIdValue pid) {
+        List<Statement> statementList = getConstraintsByType(pid, CONFLICTS_WITH_CONSTRAINT_QID).collect(Collectors.toList());
+        List<Value> conflictsWithProperties = new ArrayList<>();
+        for(Statement statement : statementList){
+            List<SnakGroup> specs = statement.getClaim().getQualifiers();
+            if (specs != null) {
+                conflictsWithProperties.addAll(findValues(specs, CONFLICTS_WITH_PROPERTY_PID));
+            }
+        }
+
+        if (!conflictsWithProperties.isEmpty()) {
+            return conflictsWithProperties.stream().map(e -> e == null ? null : (PropertyIdValue) e).collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    /**
+     * Returns the list of all the conflicting values
+     *
+     * @param pid:
+     *            the property having conflicts-with constraint
+     * @return
+     */
+    public List<Value> getItemwithConflicts(PropertyIdValue pid) {
+        List<Statement> statementList = getConstraintsByType(pid, CONFLICTS_WITH_CONSTRAINT_QID).collect(Collectors.toList());
+        List<Value> itemList = new ArrayList<>();
+        for (Statement statement : statementList) {
+            List<SnakGroup> specs = statement.getClaim().getQualifiers();
+            if (specs != null) {
+                itemList.addAll(findValues(specs, ITEM_OF_PROPERTY_CONSTRAINT_PID));
+            }
+        }
+        if (!itemList.isEmpty()) {
+            return itemList;
+        }
+        return null;
     }
 }

@@ -551,11 +551,13 @@ DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
         label: $.i18n('core-views/split-into-col')+"...",
         click: doSplitColumn
       },
+/*
       {
         id: "core/join-column",
         label: $.i18n('core-views/join-col')+"...",
           click : doJoinColumns
         },
+
       {},
       {
         id: "core/add-column",
@@ -571,7 +573,7 @@ DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
         id: "core/add-column-by-reconciliation",
         label: $.i18n('core-views/add-col-recon-val')+"...",
         click: doAddColumnByReconciliation
-      },
+      }, */
       {},
       {
         id: "core/rename-column",

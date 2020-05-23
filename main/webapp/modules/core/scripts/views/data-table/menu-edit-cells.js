@@ -361,6 +361,7 @@ DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
   };
 
   MenuSystem.appendTo(menu, [ "core/edit-cells" ], [
+/*
     {
       id: "core/text-transform",
       label: $.i18n('core-views/transform')+"...",
@@ -447,7 +448,7 @@ DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
       label: $.i18n('core-views/blank-down'),
       click: doBlankDown
     },
-    {},
+    {}, */
     {
       id: "core/split-multi-valued-cells",
       label: $.i18n('core-views/split-cells')+"...",
@@ -458,7 +459,7 @@ DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
       label: $.i18n('core-views/join-cells')+"...",
       click: doJoinMultiValueCells
     },
-    {},
+/*    {},
     {
       id: "core/cluster",
       label: $.i18n('core-views/cluster-edit')+"...",
@@ -469,7 +470,7 @@ DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
       id: "core/replace",
       label: $.i18n('core-views/replace'),
       click: doReplace
-    }
+    } */
   ]);
 
   var doTransposeColumnsIntoRows = function() {
@@ -681,6 +682,7 @@ DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
     }
   };
 
+/*
   MenuSystem.appendTo(menu, [ "core/transpose" ], [
       {
         id: "core/transpose-columns-into-rows",
@@ -700,4 +702,5 @@ DataTableColumnHeaderUI.extendMenu(function(column, columnHeaderUI, menu) {
       }
     ]
   );
+*/
 });

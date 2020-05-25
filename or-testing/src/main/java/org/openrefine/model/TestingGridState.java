@@ -13,6 +13,7 @@ import java.util.zip.GZIPOutputStream;
 
 import org.openrefine.browsing.facets.RecordAggregator;
 import org.openrefine.browsing.facets.RowAggregator;
+import org.openrefine.model.StatefulRowMapper.RowAndState;
 import org.openrefine.overlay.OverlayModel;
 import org.openrefine.util.ParsingUtilities;
 import org.testng.Assert;
@@ -242,6 +243,28 @@ public class TestingGridState implements GridState {
         }
         return new TestingGridState(newColumnModel, rows, overlayModels);
     }
+    
+
+    @Override
+    public <S> GridState mapRows(StatefulRowMapper<S> mapper, S initialState, ColumnModel newColumnModel) {
+        // Check that the mapper is serializable as it is required by the interface,
+        // even if this implementation does not rely on it.
+        TestingDatamodelRunner.ensureSerializable(mapper);
+        TestingDatamodelRunner.ensureSerializable(initialState);
+        S currentState = initialState;
+        List<Row> rows = new ArrayList<>(this.rows.size());
+        for(IndexedRow indexedRow : indexedRows()) {
+            RowAndState<S> rowAndState = mapper.call(currentState, indexedRow.getIndex(), indexedRow.getRow());
+            currentState = rowAndState.state;
+            Row row = rowAndState.row;
+            if (row.getCells().size() != newColumnModel.getColumns().size()) {
+                Assert.fail(String.format("Row size (%d) inconsistent with supplied column model (%s)",
+                        row.getCells().size(), newColumnModel.getColumns()));
+            }
+            rows.add(row);
+        }
+        return new TestingGridState(newColumnModel, rows, overlayModels);
+    }
 
     @Override
     public GridState mapRecords(RecordMapper mapper, ColumnModel newColumnModel) {
@@ -300,6 +323,5 @@ public class TestingGridState implements GridState {
     public GridState withColumnModel(ColumnModel newColumnModel) {
         return new TestingGridState(newColumnModel, rows, overlayModels);
     }
-
 
 }

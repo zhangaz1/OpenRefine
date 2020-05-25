@@ -48,7 +48,7 @@ public class SparkGridState implements GridState {
     protected final ColumnModel columnModel;
     protected final JavaPairRDD<Long, Row> grid;
     // not final because it is initialized on demand, as creating
-    // it involves running a (smal) Spark job
+    // it involves running a (small) Spark job
     protected JavaPairRDD<Long, Record> records = null;
     
     private transient long cachedRowCount;

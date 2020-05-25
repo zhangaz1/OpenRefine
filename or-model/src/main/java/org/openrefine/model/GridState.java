@@ -203,6 +203,19 @@ public interface GridState {
     public GridState mapRows(RowMapper mapper, ColumnModel newColumnModel);
     
     /**
+     * Returns a new grid state where the rows have been mapped by the
+     * stateful mapper. This can be significantly less efficient than a
+     * stateless mapper, so only use this if you really need to rely on state.
+     * 
+     * @param <S> the type of state kept by the mapper
+     * @param mapper the mapper to apply to the grid
+     * @param initialState the state in which the first row should be mapped
+     * @param newColumnModel the column model to apply to the new grid
+     * @return
+     */
+    public <S> GridState mapRows(StatefulRowMapper<S> mapper, S initialState, ColumnModel newColumnModel);
+    
+    /**
      * Returns a new grid state, where the records have been mapped by the mapper
      * 
      * @param filter the subset of records to which the mapper should be applied.
